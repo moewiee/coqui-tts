@@ -278,7 +278,7 @@ class BaseCharacters:
         return len(self._vocab)
 
     def _create_vocab(self):
-        _vocab = self._characters
+        _vocab = self._characters + "g"
         if self.is_unique:
             _vocab = list(set(_vocab))
         if self.is_sorted:

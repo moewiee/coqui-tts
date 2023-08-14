@@ -583,9 +583,30 @@ def kokoro(root_path, meta_file, **kwargs):  # pylint: disable=unused-argument
     with open(txt_file, "r", encoding="utf-8") as ttf:
         for line in ttf:
             cols = line.split("|")
+            if len(cols) != 3:
+                continue
             wav_file = os.path.join(root_path, "wavs", cols[0] + ".wav")
-            text = cols[2].replace(" ", "")
+            text = cols[1].replace(" ", "")
             items.append({"text": text, "audio_file": wav_file, "speaker_name": speaker_name, "root_path": root_path})
+    return items
+
+
+def many_ja_jp(root_path, meta_file, **kwargs):
+    txt_file = os.path.join(root_path, meta_file)
+    items = []
+    ttf = open(txt_file).read().splitlines()
+    for line in ttf:
+        cols = line.split("|")
+        if len(cols) != 3:
+            continue
+        wav_file = os.path.join(root_path, "wavs", cols[0] + ".wav")
+        speaker_name = cols[1]
+        text = cols[2].replace(" ", "")
+        if "々" in text:
+            for idx in range(len(text)):
+                if text[idx] == "々":
+                    text = text[:idx] + text[idx-1] + text[idx+1:]
+        items.append({"text": text, "audio_file": wav_file, "speaker_name": speaker_name, "root_path": root_path})
     return items
 
 
